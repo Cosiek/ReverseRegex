@@ -1,10 +1,10 @@
 # ReverseRegex
 
-The goal here is to have a function, that given a regex pattern, and some values to populate it with, will return a string that is populated with hese values, and is matched by given regex pattern.
+The goal here is to have a function, that given a regex pattern and some strings, will return a string that is populated with these strins, and is matched by given regex pattern.
 
 So, for example:
 ```
-revRx := newReverseRegex("/api/((?P<id>\d+)/edit")
-revRx.getReversedString([]string{"123"})
+rRx = newReverseRegexp(`/article/(?P<id>\d)-(?P<slug>.*)`)
+println(rRx.getReversedString("15", "title-or-something"))
 ```
-should give the string `/api/123/edit`
+should print the string `/article/15-title-or-something`.

@@ -220,6 +220,6 @@ func main() {
 	println(rRx.getReversedString("15"))
 
 	println("\nGO Proof of Concept IV")
-	rRx = newReverseRegexp(`/article/(?P<id>\d)-(?P<slug>)`)
+	rRx = newReverseRegexp(`/article/(?P<id>\d)-(?P<slug>.*)`)
 	println(rRx.getReversedString("15", "title-or-something"))
 }
