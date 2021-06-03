@@ -116,8 +116,44 @@ func (rg *runeGroup) closeGroup(remainingRune string) {
 	rg.isOpen = false
 }
 
-func (rRx *ReverseRegexp) getReversedString() string {
-	return "Yey!"
+func (rRx *ReverseRegexp) getReversedString(strings ...string) string {
+	return rRx.mainGroup.getReversedString()
+}
+
+func (rg *runeGroup) getReversedString() string {
+	rS := ""
+	var idx int16 = 1
+	var stringsIdx int16 = 0
+	var subGroupsIdx int16 = 0
+	stringsLen := int16(len(rg.strings))
+	subGroupsLen := int16(len(rg.subGroups))
+	for {
+		// gather strings
+		for sIdx := stringsIdx; sIdx < stringsLen; sIdx++ {
+			if idx == rg.strings[sIdx].idx {
+				rS += rg.strings[sIdx].str
+				stringsIdx++
+				idx++
+			} else if idx < rg.strings[sIdx].idx {
+				break
+			}
+		}
+		// apply subGroups
+		for sgIdx := subGroupsIdx; sgIdx < subGroupsLen; sgIdx++ {
+			if idx == rg.subGroups[sgIdx].idx {
+				rS += rg.subGroups[sgIdx].getReversedString()
+				subGroupsIdx++
+				idx++
+			} else if idx < rg.subGroups[sgIdx].idx {
+				break
+			}
+		}
+		// is this the end?
+		if idx > stringsLen+subGroupsLen {
+			break
+		}
+	}
+	return rS
 }
 
 func newRuneGroup(idx int16) *runeGroup {
@@ -165,7 +201,7 @@ func newReverseRegexp(pattern string) *ReverseRegexp {
 func main() {
 	println("GO Proof of Concept")
 	rRx := newReverseRegexp(`/products/e\(d\)it/(?P<id>\d+)/edit`)
-	println(rRx.getReversedString())
+	println(rRx.getReversedString("15"))
 	println(rRx.mainGroup.strings[0].idx, rRx.mainGroup.strings[0].str)
 	println(rRx.mainGroup.subGroups[0].idx, rRx.mainGroup.subGroups[0].strings[0].str)
 	println(rRx.mainGroup.strings[1].idx, rRx.mainGroup.strings[1].str)
@@ -177,4 +213,5 @@ func main() {
 	println(rRx.mainGroup.subGroups[0].subGroups[0].strings[0].idx, rRx.mainGroup.subGroups[0].subGroups[0].strings[0].str)
 	println(rRx.mainGroup.subGroups[0].idx, rRx.mainGroup.subGroups[0].strings[1].str)
 	println(rRx.mainGroup.strings[1].idx, rRx.mainGroup.strings[1].str)
+	println(rRx.getReversedString())
 }
