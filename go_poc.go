@@ -116,11 +116,11 @@ func (rg *runeGroup) closeGroup(remainingRune string) {
 	rg.isOpen = false
 }
 
-func (rRx *ReverseRegexp) getReversedString(strings ...string) string {
-	return rRx.mainGroup.getReversedString()
+func (rRx *ReverseRegexp) getReversedString(inputs ...string) string {
+	return rRx.mainGroup.getReversedString(inputs...)
 }
 
-func (rg *runeGroup) getReversedString() string {
+func (rg *runeGroup) getReversedString(inputs ...string) string {
 	rS := ""
 	var idx int16 = 1
 	var stringsIdx int16 = 0
@@ -141,7 +141,7 @@ func (rg *runeGroup) getReversedString() string {
 		// apply subGroups
 		for sgIdx := subGroupsIdx; sgIdx < subGroupsLen; sgIdx++ {
 			if idx == rg.subGroups[sgIdx].idx {
-				rS += rg.subGroups[sgIdx].getReversedString()
+				rS += inputs[subGroupsIdx]
 				subGroupsIdx++
 				idx++
 			} else if idx < rg.subGroups[sgIdx].idx {
@@ -208,10 +208,18 @@ func main() {
 
 	println("\nGO Proof of Concept II")
 	rRx = newReverseRegexp(`/products/e\(d\)it/(?P<id>\d-(\d|-)+)/edit`)
+	println(rRx.getReversedString("15"))
 	println(rRx.mainGroup.strings[0].idx, rRx.mainGroup.strings[0].str)
 	println(rRx.mainGroup.subGroups[0].idx, rRx.mainGroup.subGroups[0].strings[0].str)
 	println(rRx.mainGroup.subGroups[0].subGroups[0].strings[0].idx, rRx.mainGroup.subGroups[0].subGroups[0].strings[0].str)
 	println(rRx.mainGroup.subGroups[0].idx, rRx.mainGroup.subGroups[0].strings[1].str)
 	println(rRx.mainGroup.strings[1].idx, rRx.mainGroup.strings[1].str)
-	println(rRx.getReversedString())
+
+	println("\nGO Proof of Concept III")
+	rRx = newReverseRegexp(`/products/(?P<id>\d)+/edit`)
+	println(rRx.getReversedString("15"))
+
+	println("\nGO Proof of Concept IV")
+	rRx = newReverseRegexp(`/article/(?P<id>\d)-(?P<slug>)`)
+	println(rRx.getReversedString("15", "title-or-something"))
 }
