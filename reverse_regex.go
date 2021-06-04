@@ -1,6 +1,6 @@
-package main
+package reverse_regex
 
-type ReverseRegexp struct {
+type ReverseRegex struct {
 	mainGroup *runeGroup
 }
 
@@ -116,7 +116,7 @@ func (rg *runeGroup) closeGroup(remainingRune string) {
 	rg.isOpen = false
 }
 
-func (rRx *ReverseRegexp) getReversedString(inputs ...string) string {
+func (rRx *ReverseRegex) GetReversedString(inputs ...string) string {
 	return rRx.mainGroup.getReversedString(inputs...)
 }
 
@@ -172,7 +172,7 @@ func newStringWrapper(idx int16) *stringWrapper {
 	}
 }
 
-func newReverseRegexp(pattern string) *ReverseRegexp {
+func NewReverseRegex(pattern string) *ReverseRegex {
 	mainGroup := newRuneGroup(0)
 	for idx := 0; idx < len(pattern); idx++ {
 		letter := string(pattern[idx])
@@ -195,31 +195,5 @@ func newReverseRegexp(pattern string) *ReverseRegexp {
 		}
 	}
 	mainGroup.closeGroup("")
-	return &ReverseRegexp{mainGroup}
-}
-
-func main() {
-	println("GO Proof of Concept")
-	rRx := newReverseRegexp(`/products/e\(d\)it/(?P<id>\d+)/edit`)
-	println(rRx.getReversedString("15"))
-	println(rRx.mainGroup.strings[0].idx, rRx.mainGroup.strings[0].str)
-	println(rRx.mainGroup.subGroups[0].idx, rRx.mainGroup.subGroups[0].strings[0].str)
-	println(rRx.mainGroup.strings[1].idx, rRx.mainGroup.strings[1].str)
-
-	println("\nGO Proof of Concept II")
-	rRx = newReverseRegexp(`/products/e\(d\)it/(?P<id>\d-(\d|-)+)/edit`)
-	println(rRx.getReversedString("15"))
-	println(rRx.mainGroup.strings[0].idx, rRx.mainGroup.strings[0].str)
-	println(rRx.mainGroup.subGroups[0].idx, rRx.mainGroup.subGroups[0].strings[0].str)
-	println(rRx.mainGroup.subGroups[0].subGroups[0].strings[0].idx, rRx.mainGroup.subGroups[0].subGroups[0].strings[0].str)
-	println(rRx.mainGroup.subGroups[0].idx, rRx.mainGroup.subGroups[0].strings[1].str)
-	println(rRx.mainGroup.strings[1].idx, rRx.mainGroup.strings[1].str)
-
-	println("\nGO Proof of Concept III")
-	rRx = newReverseRegexp(`/products/(?P<id>\d)+/edit`)
-	println(rRx.getReversedString("15"))
-
-	println("\nGO Proof of Concept IV")
-	rRx = newReverseRegexp(`/article/(?P<id>\d)-(?P<slug>.*)`)
-	println(rRx.getReversedString("15", "title-or-something"))
+	return &ReverseRegex{mainGroup}
 }
