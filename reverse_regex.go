@@ -1,5 +1,7 @@
 package reverse_regex
 
+import "strings"
+
 type ReverseRegex struct {
 	mainGroup *runeGroup
 }
@@ -153,6 +155,10 @@ func (rg *runeGroup) getReversedString(inputs ...string) string {
 			break
 		}
 	}
+	// get rid of escape chars for parenthees \( \)
+	rS = strings.ReplaceAll(rS, "\\(", "(")
+	rS = strings.ReplaceAll(rS, "\\)", ")")
+
 	return rS
 }
 
